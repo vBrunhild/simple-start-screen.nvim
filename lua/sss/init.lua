@@ -147,13 +147,23 @@ function M.setup(opts)
     })
 
     local guicursor = vim.o.guicursor
-    vim.o.guicursor = "a:SSSHiddenCursor"
+
+    vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+        buffer = sss.buffer,
+        desc = "Hide cursor on start screen",
+        callback = function()
+            guicursor = vim.o.guicursor
+            vim.o.guicursor = "a:SSSHiddenCursor"
+        end
+    })
 
     vim.api.nvim_create_autocmd("BufLeave", {
         buffer = sss.buffer,
         desc = "Restore cursor on screen exit",
         once = true,
-        callback = function() vim.opt.guicursor = guicursor end
+        callback = function()
+            vim.o.guicursor = guicursor
+        end
     })
 end
 
