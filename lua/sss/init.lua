@@ -128,41 +128,15 @@ M.config = {
 
 ---@param opts SimpleStartScreenOpts?
 function M.setup(opts)
-    if vim.fn.argc() > 0 then return end
 
     opts = vim.tbl_deep_extend("force", M.config, opts or {})
     local sss = SimpleStartScreen.new(opts)
 
     vim.api.nvim_create_autocmd({ "VimEnter", "VimResized" }, {
         desc = "Simple Start Screen",
-        callback = function() sss:render() end
-    })
-
-    local ns_id = vim.api.nvim_create_namespace("SimpleStartScreen")
-    vim.api.nvim_set_hl(ns_id, "SSSHiddenCursor", {
-        bg = "fg",
-        fg = "bg",
-        blend = 100,
-        default = true,
-    })
-
-    local guicursor = vim.o.guicursor
-
-    vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
-        buffer = sss.buffer,
-        desc = "Hide cursor on start screen",
         callback = function()
-            guicursor = vim.o.guicursor
-            vim.o.guicursor = "a:SSSHiddenCursor"
-        end
-    })
-
-    vim.api.nvim_create_autocmd("BufLeave", {
-        buffer = sss.buffer,
-        desc = "Restore cursor on screen exit",
-        once = true,
-        callback = function()
-            vim.o.guicursor = guicursor
+            if vim.fn.argc() > 0 then return end
+            sss:render()
         end
     })
 end
