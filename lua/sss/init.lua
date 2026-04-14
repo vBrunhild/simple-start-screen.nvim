@@ -128,16 +128,13 @@ M.config = {
 
 ---@param opts SimpleStartScreenOpts?
 function M.setup(opts)
-
+    if vim.fn.argc() > 0 then return end
     opts = vim.tbl_deep_extend("force", M.config, opts or {})
     local sss = SimpleStartScreen.new(opts)
 
     vim.api.nvim_create_autocmd({ "VimEnter", "VimResized" }, {
         desc = "Simple Start Screen",
-        callback = function()
-            if vim.fn.argc() > 0 then return end
-            sss:render()
-        end
+        callback = function() sss:render() end
     })
 end
 
